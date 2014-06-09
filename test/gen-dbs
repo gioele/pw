@@ -15,3 +15,5 @@ done
 
 # generate a broken database
 cat ${fixtures_dir}/good | sed -e 's/entry2:...../entry2:XXXXX/' | sed -e '7d' > ${fixtures_dir}/bad
+
+# This is free software released into the public domain (CC0 license).

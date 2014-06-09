@@ -10,3 +10,5 @@ for dir in $CONFIG_DIRS ; do
 	[ -f "$dir/pw" ] && . "$dir/pw" || true
 done
 IFS=$old_ifs
+
+# This is free software released into the public domain (CC0 license).
