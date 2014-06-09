@@ -66,6 +66,8 @@ fi
 	exit 1
 }
 
+match_found=false
+
 eval $db_cmd | while IFS= read -r line ; do
 	version=$(echo $line | cut -d: -f1)
 	label=$(echo $line | cut -d: -f2)
@@ -82,6 +84,8 @@ eval $db_cmd | while IFS= read -r line ; do
 	if ! matches_fields "$pattern" "$id" "Label: $label" ; then
 		continue
 	fi
+
+	match_found=true
 
 	password=$(echo "$data" | head -n 1)
 
@@ -103,5 +107,9 @@ eval $db_cmd | while IFS= read -r line ; do
 
 	printf '\n'
 done
+
+if [ -n "$pattern" ] && ! $match_found ; then
+	exit 1
+fi
 
 # This is free software released into the public domain (CC0 license).

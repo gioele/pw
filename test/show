@@ -2,6 +2,8 @@
 
 . `dirname $0`/support.sh
 
+PW_SHOW_GOOD="$PW_SHOW -d ${fixtures_dir}/good"
+
 echo "pw-show ($PW_SHOW)..."
 echo
 
@@ -21,3 +23,6 @@ num_records=$($PW_SHOW -d ${fixtures_dir}/good | wc -l)
 echo "...complains about broken records but goes on"
 num_records=$($PW_SHOW -d ${fixtures_dir}/bad | wc -l)
 [ "$num_records" -eq 6 ] && ok || failed
+
+echo "...returns an error if it cannot find any matching entry"
+$PW_SHOW_GOOD 'non-existing' && failed || ok
