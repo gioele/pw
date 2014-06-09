@@ -1,9 +1,5 @@
 #!/bin/sh
 
-# from https://www.gnupg.org/documentation/manuals/gnupg-devel/Unattended-GPG-key-generation.html
-
-echo `dirname $0`/support.sh
-
 . `dirname $0`/support.sh
 
 mkdir -p ${fixtures_dir}/keys
@@ -12,6 +8,7 @@ mkdir -p ${fixtures_dir}/keys
 echo "GPG_KEY=test@example.org" > ${fixtures_dir}/pw
 
 # generate key
+# from https://www.gnupg.org/documentation/manuals/gnupg-devel/Unattended-GPG-key-generation.html
 test -f ${fixtures_dir}/secring.gpg && echo "GPG key already generated" || {
 	cat <<-EOD
 		Key-Type: default
