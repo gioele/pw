@@ -25,11 +25,11 @@ The main points of pw are:
 Usage
 -----
 
-First you need to tell pw what key should be used to encrypt the data.
+First you need to tell pw which key should be used to encrypt the data.
 
     $ echo "GPG_KEY=mel@example.com" > ~/.config/pw
 
-Then you add some password
+Then you add a password interactively
 
     $ pw-insert
 
@@ -58,8 +58,8 @@ We will use the following data:
     User: mel@friends.example.net
     Host: http://login.example.net/friends
 
-Once you save that files and exit `$EDITOR`, pw will store the result in the
-default database, `$XDG_DATA_HOME/pw/passwords` (usually
+Once you save that files and exit the text editor, pw will store the result
+in the default database: `$XDG_DATA_HOME/pw/passwords` (usually
 `~/.local/share/pw/passwords`; this is configurable).
 
 Let's add another password, this time with a clear-text label.
@@ -99,8 +99,8 @@ or all the passwords together with all the other data:
     pwOFFICE
 
 
-How does it work and information about the format
--------------------------------------------------
+How does pw work? Some information about its format
+---------------------------------------------------
 
 pw stores all its data in a password database (you can switch database
 using the `--database=FILE` option). Each entry is stored in one line
@@ -117,7 +117,7 @@ and is composed of four fields, separated by a colon (`:`):
 
 4. The opaque _ID_. The ID of the entry.
 
-An example of this record is the following (long) line:
+An example entry is the following line (split for convenience):
 
     1p::hQEMA3wI588j6IQ6AQf_Xz4P6jaIwg4Uzf1xlo54jf0cpUpolNQ_7cYv2c17I7N
     E7b4gYHhFmP9gx83MIs_GQwKa2k0iG-oRCWddsLJxWRq655WDJ4qngRhHHni6zoVOB5
