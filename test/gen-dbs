@@ -1,7 +1,5 @@
 #!/bin/sh
 
-# from https://www.gnupg.org/documentation/manuals/gnupg-devel/Unattended-GPG-key-generation.html
-
 . `dirname $0`/support.sh
 
 mkdir -p ${fixtures_dir}
