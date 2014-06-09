@@ -1,5 +1,8 @@
+red=$(tput setab 1)
+reset=$(tput sgr0)
+
 ok () { echo "ok" ; echo ; }
-failed () { echo "FAILED" ; echo ; }
+failed () { echo $red "FAILED" $reset ; echo ; }
 
 fixtures_dir="`dirname $0`/fixtures"
 
