@@ -10,7 +10,7 @@ for i in `seq 1 5` ; do
 	echo "pw$i" | $PW_INSERT -d ${fixtures_dir}/good -t- "entry$i"
 done
 for i in `seq 6 8` ; do
-	echo "pw$i" | $PW_INSERT -d ${fixtures_dir}/good -t-
+	echo "pw$i\nUser: hidden-entry$i\nPIN: $i$i" | $PW_INSERT -d ${fixtures_dir}/good -t-
 done
 
 # generate a broken database
