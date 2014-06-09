@@ -161,6 +161,7 @@ limitations.
   to decipher every entry. With modern computers this is not a real issue.
   In case this is an issue for you, use label and the `--label-only`
   option.
+* Labels cannot be composed only of digits.
 * Labels cannot include any of the following characters: `:`, `#`, `*`, `\`.
 
 
