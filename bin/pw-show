@@ -81,11 +81,12 @@ eval $db_cmd | while IFS= read -r line ; do
 	}
 	data=${data%x}
 
-	if ! matches_fields "$pattern" "$id" "Label: $label" ; then
+	fields=$(echo "$data" | tail -n +2)
+	# FIXME: split fields
+
+	if ! matches_fields "$pattern" "ID: $id" "Label: $label" "$fields" ; then
 		continue
 	fi
-
-	match_found=true
 
 	password=$(echo "$data" | head -n 1)
 
@@ -102,11 +103,11 @@ eval $db_cmd | while IFS= read -r line ; do
 	fi
 
 	if ! $opt_show_all ; then
-		exit
+		exit 1
 	fi
 
 	printf '\n'
-done
+done || match_found=true
 
 if [ -n "$pattern" ] && ! $match_found ; then
 	exit 1

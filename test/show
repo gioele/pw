@@ -26,3 +26,7 @@ num_records=$($PW_SHOW -d ${fixtures_dir}/bad | wc -l)
 
 echo "...returns an error if it cannot find any matching entry"
 $PW_SHOW_GOOD 'non-existing' && failed || ok
+
+echo "...searches on all fields"
+pw=$($PW_SHOW_GOOD 'hidden-entry6')
+[ "$pw" = "pw6" ] && ok || failed
