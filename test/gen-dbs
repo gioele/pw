@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# from https://www.gnupg.org/documentation/manuals/gnupg-devel/Unattended-GPG-key-generation.html
+
+. `dirname $0`/support.sh
+
+mkdir -p ${fixtures_dir}
+
+# generate a good database
+rm -f ${fixtures_dir}/good
+for i in `seq 1 5` ; do
+	echo "pw$i" | $PW_INSERT -d ${fixtures_dir}/good -t- "entry$i"
+done
+for i in `seq 6 8` ; do
+	echo "pw$i" | $PW_INSERT -d ${fixtures_dir}/good -t-
+done
+
+# generate a broken database
+cat ${fixtures_dir}/good | sed -e 's/entry2:...../entry2:XXXXX/' | sed -e '7d' > ${fixtures_dir}/bad

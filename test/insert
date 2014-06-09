@@ -1,0 +1,20 @@
+#!/bin/sh
+
+. `dirname $0`/support.sh
+
+echo "pw-insert ($PW_INSERT)..."
+echo
+
+echo "...correctly inserts a password"
+db=$(mktemp)
+echo foo | $PW_INSERT -d "$db" -t - "test"
+read_pw=$($PW_SHOW -d "$db" "test")
+[ "$read_pw" = "foo" ] && ok || failed
+rm -f "$db"
+
+echo "...does not insert the same label twice"
+db=$(mktemp)
+echo foo | $PW_INSERT -d "$db" -t - "test" && ok || failed
+echo faa | $PW_INSERT -d "$db" -t - "test" && failed || ok
+rm -f "$db"
+

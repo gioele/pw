@@ -1,0 +1,107 @@
+#!/bin/sh
+
+set -u
+set -e
+
+LIB_DIR="`dirname $0`/../lib/pw"
+
+. "${LIB_DIR}/configuration.sh"
+. "${LIB_DIR}/functions.sh"
+
+help () {
+	cat <<-EOD
+	Usage: pw-show [OPTION] [PATTERN]
+	Show the password for the first entry that matches PATTERN, or all passwords if no PATTERN is given.
+
+	  -a, --all         Show all entries that match PATTERN
+	  -c, --complete    Display all data, not just the password
+	  -d, --db FILE     Use FILE as the password database
+	  -l, --label-only  Search only in labels, equivalent to --search-fields=label
+	  -s, --search-fields FIELDS  Search only in the specified fields
+
+	  -h, --help        Display this help and exit
+
+	PATTERN is a grep's basic regexp.
+	EOD
+	exit
+}
+
+opt_show_all=false
+opt_complete_output=false
+opt_match_label_only=false
+pattern=''
+
+options=$(getopt --name pw-show -o acld:s:h -l all,complete,label-only,db:,search-fields:,help -- "$@") || help
+eval set -- "$options"
+
+while [ $# -gt 0 ] ; do
+	case "$1" in
+		-a|--all) opt_show_all=true ;;
+		-c|--complete) opt_complete_output=true ;;
+		-d|--db) DB="$2" ; shift ;;
+		-l|--label-only) opt_match_label_only=true shift ;;
+		-s|--search-fields) echo "$1 not implemented" ; exit 1 ;;
+		-h|--help) help ;;
+		--) shift ; break ;;
+		*) break ;;
+	esac
+	shift
+done
+[ $# -ne 0 ] && pattern=$1
+[ -z "$pattern" ] && opt_show_all=true
+
+db_cmd="cat '$DB'"
+if $opt_match_label_only ; then
+	db_cmd="$db_cmd | grep ':${pattern}:'"
+fi
+
+[ ! -d "$DB" ] || {
+	echo "ERROR: the password database \`\`$DB'' is not a file." >&2
+	exit 1
+}
+
+[ -e "$DB" ] || {
+	echo "ERROR: the password database \`\`$DB'' does not exist." >&2
+	echo "Use \`\`pw-insert -d $DB'' to create it." >&2
+	exit 1
+}
+
+eval $db_cmd | while IFS= read -r line ; do
+	version=$(echo $line | cut -d: -f1)
+	label=$(echo $line | cut -d: -f2)
+	blob=$(echo $line | cut -d: -f3)
+	id=$(echo $line | cut -d: -f4)
+
+	data=$(printf '%s' $blob | base64_d_pw | gpg_decrypt ; printf 'x') || {
+		echo "ERROR: Cannot decrypt the entry at $DB:$id (gpg exited with error code $?)." >&2
+		echo "Remove the broken entry with \`\`pw-edit -d $DB -r $id''." >&2
+		continue
+	}
+	data=${data%x}
+
+	if ! matches_fields "$pattern" "$id" "Label: $label" ; then
+		continue
+	fi
+
+	password=$(echo "$data" | head -n 1)
+
+	if $opt_complete_output ; then
+		printf '%s\n%s\n' "ID: $id" "Label: $label"
+		printf '%s' "$data"
+	else
+		if $opt_show_all ; then
+			printf '%s\t%s' "$id" "$password"
+		else
+			printf '%s' "$password"
+			is_output_interactive && printf '\n'
+		fi
+	fi
+
+	if ! $opt_show_all ; then
+		exit
+	fi
+
+	printf '\n'
+done
+
+# This is free software released into the public domain (CC0 license).

@@ -1,0 +1,97 @@
+#!/bin/sh
+
+set -u
+set -e
+
+LIB_DIR="`dirname $0`/../lib/pw"
+
+. "${LIB_DIR}/configuration.sh"
+. "${LIB_DIR}/functions.sh"
+
+check_opts () {
+	[ -n "$handle" ] || {
+		echo "ERROR: The HANDLE of the entry to be modified has not been provided." >&2
+		return 1
+	}
+}
+
+help () {
+	cat <<-EOD
+		Usage: pw-edit [OPTION] HANDLE
+		Modify an existing entry in the password store.
+
+		  -d, --db FILE          Use FILES as the password database
+		  -l, --new-label LABEL  Set a new label
+		  -r, --remove LABEL     Remove the entry
+
+		  -h, --help       Display this help and exit
+
+		HANDLE can be a label or a regexp matching the whole label.
+	EOD
+	exit
+}
+
+opt_batch=false
+opt_change_label=false
+opt_remove_entry=false
+handle=''
+
+options=$(getopt --name pw-edit -o d:l:rh -l db:,new-label:,remove,help -- "$@") || help
+eval set -- "$options"
+
+while [ $# -gt 0 ] ; do
+	case "$1" in
+		-d|--db) DB=$2 ; shift ;;
+		-l|--new-label) opt_change_label=true ; new_label=$2 ; shift ;;
+		-r|--remove) opt_remove_entry=true ;;
+		-h|--help) help ;;
+		--) shift ; break ;;
+		*) break ;;
+	esac
+	shift
+done
+[ $# -ne 0 ] && handle=$1
+
+check_opts
+
+if $opt_change_label ; then
+	sed_expr="0,\\#:$handle:#{s#:$handle:#:$new_label:#}"
+elif $opt_remove_entry ; then
+	pattern=":${handle}\\(:\\|\$\\)"
+	sed_expr="0,\\#${pattern}#{\\#${pattern}#d}"
+else
+	old_line=$(cat "$DB" | grep ":$handle\(:\|$\)") || {
+		echo "ERROR: No entry found using handle '${handle}'" >&2
+		exit 1
+	}
+
+	old_line=$(echo "$old_line" | head -n1)
+	old_label=$(echo $old_line | cut -d: -f2)
+
+	file=$(mktemp_pw)
+	eval $(auto_rm_cmd "$file")
+
+	# http://stackoverflow.com/questions/24078578/launching-an-editor-from-a-pipelined-command
+	set +e #FIXME: cmd-line editors need the terminal, can we release it?
+
+	old_data=$(`dirname $0`/pw-show -c "$handle" | tail -n +3) || {
+		echo "ERROR: Cannot extract the data to be modified" >&2
+		exit 1
+	}
+
+	echo $old_data | `dirname $0`/pw-insert -d "$file" -t - $old_label true || {
+		echo "Entry '$handle' not updated." >&2
+		exit 1
+	}
+
+	set -e #FIXME
+
+	new_line=$(cat $file)
+
+	sed_expr="s#^${old_line}\$#${new_line}#"
+fi
+
+sed -i.bak -e "$sed_expr" "$DB"
+rm -f "${DB}.bak"
+
+# This is free software released into the public domain (CC0 license).

@@ -1,0 +1,23 @@
+#!/bin/sh
+
+. `dirname $0`/support.sh
+
+echo "pw-show ($PW_SHOW)..."
+echo
+
+echo "...accepts empty dbs"
+$PW_SHOW -d /dev/null && ok || failed
+
+echo "...does not accept directories"
+$PW_SHOW -d /tmp && failed || ok
+
+echo "...complains about missing dbs"
+$PW_SHOW -d /tmp/does-not-exist && failed || ok
+
+echo "...with no params shows all records"
+num_records=$($PW_SHOW -d ${fixtures_dir}/good | wc -l)
+[ "$num_records" -eq 8 ] && ok || failed
+
+echo "...complains about broken records but goes on"
+num_records=$($PW_SHOW -d ${fixtures_dir}/bad | wc -l)
+[ "$num_records" -eq 6 ] && ok || failed

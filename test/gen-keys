@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# from https://www.gnupg.org/documentation/manuals/gnupg-devel/Unattended-GPG-key-generation.html
+
+echo `dirname $0`/support.sh
+
+. `dirname $0`/support.sh
+
+mkdir -p ${fixtures_dir}/keys
+
+# generate config file
+echo "GPG_KEY=test@example.org" > ${fixtures_dir}/pw
+
+# generate key
+test -f ${fixtures_dir}/secring.gpg && echo "GPG key already generated" || {
+	cat <<-EOD
+		Key-Type: default
+		Subkey-Type: default
+		Name-Real: Testo the tester
+		Name-Comment: with no passphrase
+		Name-Email: test@example.org
+		Expire-Date: 0
+		%commit
+	EOD
+} | gpg2 $GPG_OPTS --gen-key --batch -
+
+# This is free software released into the public domain (CC0 license).
