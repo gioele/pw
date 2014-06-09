@@ -99,6 +99,20 @@ or all the passwords together with all the other data:
     pwOFFICE
 
 
+Composition with other unix tools
+---------------------------------
+
+pw has been developed to be readily used with other unix tool using
+pipelines.
+
+For example it is possible to write a small script that identifies
+all the stored passwords that are shorter than 6 characters.
+
+pw-show | while read id pass ; do
+	[ "${#pass}" -lt 6 ] && echo "Too short" && pw-show -c $id
+done
+
+
 How does pw work? Some information about its format
 ---------------------------------------------------
 
