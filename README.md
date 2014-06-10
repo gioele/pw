@@ -108,9 +108,9 @@ pipelines.
 For example it is possible to write a small script that identifies
 all the stored passwords that are shorter than 6 characters.
 
-pw-show | while read id pass ; do
-	[ "${#pass}" -lt 6 ] && echo "Too short" && pw-show -c $id
-done
+    pw-show | while read id pass ; do
+        [ "${#pass}" -lt 6 ] && echo "Too short" && pw-show -c $id
+    done
 
 
 How does pw work? Some information about its format
