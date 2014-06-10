@@ -16,8 +16,8 @@ help () {
 	  -a, --all         Show all entries that match PATTERN
 	  -c, --complete    Display all data, not just the password
 	  -d, --db FILE     Use FILE as the password database
-	  -l, --label-only  Search only in labels, equivalent to --search-fields=label
-	  -s, --search-fields FIELDS  Search only in the specified fields
+	  -l, --label-only  Search only in labels, equivalent to --search-field=Label
+	  -s, --search-field FIELD  Search only in the specified field
 
 	  -h, --help        Display this help and exit
 
@@ -29,9 +29,10 @@ help () {
 opt_show_all=false
 opt_complete_output=false
 opt_match_label_only=false
+search_field=''
 pattern=''
 
-options=$(getopt --name pw-show -o acld:s:h -l all,complete,label-only,db:,search-fields:,help -- "$@") || help
+options=$(getopt --name pw-show -o acld:s:h -l all,complete,label-only,db:,search-field:,help -- "$@") || help
 eval set -- "$options"
 
 while [ $# -gt 0 ] ; do
@@ -40,7 +41,7 @@ while [ $# -gt 0 ] ; do
 		-c|--complete) opt_complete_output=true ;;
 		-d|--db) DB="$2" ; shift ;;
 		-l|--label-only) opt_match_label_only=true shift ;;
-		-s|--search-fields) echo "$1 not implemented" ; exit 1 ;;
+		-s|--search-field) search_field="$2" ; shift ;;
 		-h|--help) help ;;
 		--) shift ; break ;;
 		*) break ;;
@@ -82,9 +83,16 @@ eval $db_cmd | while IFS= read -r line ; do
 	data=${data%x}
 
 	fields=$(echo "$data" | tail -n +2)
-	# FIXME: split fields
+	all_fields=$(printf '%s\n%s\n%s' "ID: $id" "Label: $label" "$fields")
 
-	if ! matches_fields "$pattern" "ID: $id" "Label: $label" "$fields" ; then
+	field_matched=false
+	echo "$all_fields" | while IFS= read -r field ; do
+		if [ -z "$pattern" ] || matches_field "$pattern" "$field" "$search_field" ; then
+			exit 1
+		fi
+	done || field_matched=true
+
+	if ! $field_matched ; then
 		continue
 	fi
 

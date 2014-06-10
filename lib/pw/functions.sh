@@ -23,22 +23,14 @@ gpg_decrypt () {
 	gpg ${opts} --decrypt --batch --quiet 2>/dev/null
 }
 
-matches_fields () {
-	pattern=$1
-	shift
+matches_field () {
+	pattern="$1"
+	field="$2"
+	key="$3"
 
-	# the rest are fields
+	[ -z "$key" ] && key='[^:]\+'
 
-	[ -z "$pattern" ] && return 0
-
-	for field ; do
-		value=${field#*: }
-		if printf '%s' "$value" | grep -q "^$pattern\$" ; then
-			return 0
-		fi
-	done
-
-	return 1
+	printf '%s' "$field" | grep -q "^$key: $pattern\$"
 }
 
 # This is free software released into the public domain (CC0 license).
