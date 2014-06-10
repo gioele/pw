@@ -37,3 +37,10 @@ pw=$($PW_SHOW_GOOD -s 'PIN' '66')
 
 echo "...searches only certain fields (part 2, not others)"
 $PW_SHOW_GOOD -s 'PIN' 'hidden-entry6' && failed || ok
+
+echo "...searches only in labels (part 1, only in labels)"
+pw=$($PW_SHOW_GOOD -l 'entry5')
+[ "$pw" = "pw5" ] && ok || failed
+
+echo "...searches only in labels (part 2, not in other fields)"
+$PW_SHOW_GOOD -l 'hidden-entry6' && failed || ok

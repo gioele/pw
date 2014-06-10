@@ -28,7 +28,6 @@ help () {
 
 opt_show_all=false
 opt_complete_output=false
-opt_match_label_only=false
 search_field=''
 pattern=''
 
@@ -40,7 +39,7 @@ while [ $# -gt 0 ] ; do
 		-a|--all) opt_show_all=true ;;
 		-c|--complete) opt_complete_output=true ;;
 		-d|--db) DB="$2" ; shift ;;
-		-l|--label-only) opt_match_label_only=true shift ;;
+		-l|--label-only) search_field='Label' ; pattern="$2" ; shift ;;
 		-s|--search-field) search_field="$2" ; shift ;;
 		-h|--help) help ;;
 		--) shift ; break ;;
@@ -52,7 +51,7 @@ done
 [ -z "$pattern" ] && opt_show_all=true
 
 db_cmd="cat '$DB'"
-if $opt_match_label_only ; then
+if [ "$search_field" = 'Label' ] ; then
 	db_cmd="$db_cmd | grep ':${pattern}:'"
 fi
 
