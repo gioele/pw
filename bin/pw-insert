@@ -8,14 +8,6 @@ LIB_DIR="`dirname $0`/../lib/pw"
 . "${LIB_DIR}/configuration.sh"
 . "${LIB_DIR}/functions.sh"
 
-check_config () {
-	[ "${GPG_KEY-unset}" != "unset" ] || {
-		echo "ERROR: GPG_KEY not set" >&2
-		echo "Set GPG_KEY in $CONFIG_FILE" >&2
-		return 1
-	}
-}
-
 help () {
 	cat <<-EOD
 		Usage: pw-insert [OPTION] [LABEL]"
@@ -49,6 +41,14 @@ while [ $# -gt 0 ] ; do
 	shift
 done
 [ $# -ne 0 ] && label=$1
+
+check_config () {
+	[ "${GPG_KEY-unset}" != "unset" ] || {
+		echo "ERROR: GPG_KEY not set" >&2
+		echo "Set GPG_KEY in $CONFIG_FILE" >&2
+		return 1
+	}
+}
 
 check_config
 

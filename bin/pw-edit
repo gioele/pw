@@ -8,13 +8,6 @@ LIB_DIR="`dirname $0`/../lib/pw"
 . "${LIB_DIR}/configuration.sh"
 . "${LIB_DIR}/functions.sh"
 
-check_opts () {
-	[ -n "$handle" ] || {
-		echo "ERROR: The HANDLE of the entry to be modified has not been provided." >&2
-		return 1
-	}
-}
-
 help () {
 	cat <<-EOD
 		Usage: pw-edit [OPTION] HANDLE
@@ -51,6 +44,13 @@ while [ $# -gt 0 ] ; do
 	shift
 done
 [ $# -ne 0 ] && handle=$1
+
+check_opts () {
+	[ -n "$handle" ] || {
+		echo "ERROR: The HANDLE of the entry to be modified has not been provided." >&2
+		return 1
+	}
+}
 
 check_opts
 
