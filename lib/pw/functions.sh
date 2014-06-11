@@ -1,5 +1,8 @@
 is_numeric () { test "$1" && printf '%i' "$1" >/dev/null 2>&1 ; }
 
+error_pw () { printf 'ERROR: %s\n' "$1" >&2 ; }
+msg_pw () { printf '%s\n' "$1" >&2 ; }
+
 is_input_interactive () { test -t 0 ; }
 is_output_interactive () { test -t 1 ; }
 

@@ -45,7 +45,7 @@ done
 
 check_args () {
 	[ -n "$pattern" ] || {
-		echo "ERROR: The HANDLE of the entry to be autotyped has not been provided." >&2
+		error_pw "The HANDLE of the entry to be autotyped has not been provided."
 		exit 1
 	}
 }

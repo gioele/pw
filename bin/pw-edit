@@ -47,7 +47,7 @@ done
 
 check_opts () {
 	[ -n "$handle" ] || {
-		echo "ERROR: The HANDLE of the entry to be modified has not been provided." >&2
+		error_pw "The HANDLE of the entry to be modified has not been provided."
 		return 1
 	}
 }
@@ -61,7 +61,7 @@ elif $opt_remove_entry ; then
 	sed_expr="0,\\#${pattern}#{\\#${pattern}#d}"
 else
 	old_line=$(cat "$DB" | grep ":$handle\(:\|$\)") || {
-		echo "ERROR: No entry found using handle '${handle}'" >&2
+		error_pw "No entry found using handle \`\`${handle}''."
 		exit 1
 	}
 
@@ -75,12 +75,12 @@ else
 	set +e #FIXME: cmd-line editors need the terminal, can we release it?
 
 	old_data=$(`dirname $0`/pw-show -c "$handle" | tail -n +3) || {
-		echo "ERROR: Cannot extract the data to be modified" >&2
+		error_pw "Cannot extract the data to be modified."
 		exit 1
 	}
 
 	echo $old_data | `dirname $0`/pw-insert -d "$file" -t - $old_label true || {
-		echo "Entry '$handle' not updated." >&2
+		msg_pw "Entry '$handle' not updated."
 		exit 1
 	}
 

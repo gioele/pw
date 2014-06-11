@@ -44,8 +44,8 @@ done
 
 check_config () {
 	[ "${GPG_KEY-unset}" != "unset" ] || {
-		echo "ERROR: GPG_KEY not set" >&2
-		echo "Set GPG_KEY in $CONFIG_FILE" >&2
+		error_pw "GPG_KEY not set"
+		msg_pw "Set GPG_KEY in $CONFIG_FILE"
 		return 1
 	}
 }
@@ -53,7 +53,7 @@ check_config () {
 check_config
 
 [ -z "$label" ] || ! grep -q ":${label}:" "$DB" 2>/dev/null || {
-	echo "ERROR: there is already an entry with label \`\`${label}''" >&2
+	error_pw "There is already an entry with label \`\`${label}''"
 	exit 1
 }
 
@@ -84,19 +84,19 @@ orig_date=$(date -r $file +%s)
 
 if ! $opt_batch ; then
 	$EDITOR $file || {
-		echo "ERROR: something went wrong while editing \`\`$file'' with \`\`$EDITOR''"
+		error_pw "something went wrong while editing \`\`$file'' with \`\`$EDITOR''"
 	}
 fi
 
 data=$(cat $file | grep -v '^\(#\|$\)') || {
-	echo "No data entered, quitting." >&2
+	msg_pw "No data entered, quitting."
 	exit 1
 }
 
 mod_date=$(date -r $file +%s)
 
 if ! $opt_batch && [ "$orig_date" = "$mod_date" ] ; then
-	echo "No data changed, quitting." >&2
+	msg_pw "No data changed, quitting."
 	exit 1
 fi
 
@@ -104,14 +104,14 @@ version="1p"
 
 blob=$(echo "$data" | gpg_encrypt $GPG_KEY | base64_pw)
 [ -z "$blob" ] && {
-	echo "ERROR: Cannot encrypt entry." >&2
+	error_pw " Cannot encrypt entry."
 	exit 1
 }
 
 id=$(echo "$version:$label:$blob" | sha1_pw | cut -d' ' -f1)
 
 [ -f "$DB" ] || {
-	echo "Password store $DB not found, creating..."
+	msg_pw "Password store $DB not found, creating..."
 	mkdir -p `dirname "$DB"`
 	touch "$DB"
 }

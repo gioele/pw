@@ -55,12 +55,12 @@ done
 
 check_args () {
 	if [ -n "$search_field" -a -z "$pattern" ] ; then
-		echo "ERROR: requested to search in field \`\`$search_field'' but no PATTERN specified." >&2
+		error_pw "Requested to search in field \`\`$search_field'' but no PATTERN specified."
 		exit 1
 	fi
 
 	if [ -n "$show_field" ] && $opt_complete_output ; then
-		echo "ERROR: requested to show only field \`\`$show_field'' but also all fields." >&2
+		error_pw "Requested to show only field \`\`$show_field'' but also all fields."
 		exit 1
 	fi
 }
@@ -73,13 +73,13 @@ if [ "$search_field" = 'Label' ] ; then
 fi
 
 [ ! -d "$DB" ] || {
-	echo "ERROR: the password database \`\`$DB'' is not a file." >&2
+	error_pw "The password database \`\`$DB'' is not a file."
 	exit 1
 }
 
 [ -e "$DB" ] || {
-	echo "ERROR: the password database \`\`$DB'' does not exist." >&2
-	echo "Use \`\`pw-insert -d $DB'' to create it." >&2
+	error_pw "The password database \`\`$DB'' does not exist."
+	msg_pw "Use \`\`pw-insert -d $DB'' to create it."
 	exit 1
 }
 
@@ -92,8 +92,8 @@ eval $db_cmd | while IFS= read -r line ; do
 	id=$(echo $line | cut -d: -f4)
 
 	data=$(printf '%s' $blob | base64_d_pw | gpg_decrypt ; printf 'x') || {
-		echo "ERROR: Cannot decrypt the entry at $DB:$id (gpg exited with error code $?)." >&2
-		echo "Remove the broken entry with \`\`pw-edit -d $DB -r $id''." >&2
+		error_pw "Cannot decrypt the entry at $DB:$id (gpg exited with error_pw code $?)."
+		msg_pw "Remove the broken entry with \`\`pw-edit -d $DB -r $id''."
 		continue
 	}
 	data=${data%x}
