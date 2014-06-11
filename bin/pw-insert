@@ -102,13 +102,13 @@ fi
 
 version="1p"
 
-blob=$(echo "$data" | gpg_encrypt $GPG_KEY | base64_pw)
+blob=$(printf '%s\n' "$data" | gpg_encrypt $GPG_KEY | base64_pw)
 [ -z "$blob" ] && {
 	error_pw " Cannot encrypt entry."
 	exit 1
 }
 
-id=$(echo "$version:$label:$blob" | sha1_pw | cut -d' ' -f1)
+id=$(printf '%s\n' "$version:$label:$blob" | sha1_pw | cut -d' ' -f1)
 
 [ -f "$DB" ] || {
 	msg_pw "Password store $DB not found, creating..."
@@ -116,6 +116,6 @@ id=$(echo "$version:$label:$blob" | sha1_pw | cut -d' ' -f1)
 	touch "$DB"
 }
 
-echo "$version:$label:$blob:$id" >> $DB
+printf '%s\n' "$version:$label:$blob:$id" >> $DB
 
 # This is free software released into the public domain (CC0 license).

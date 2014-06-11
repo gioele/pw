@@ -86,10 +86,10 @@ fi
 match_found=false
 
 eval $db_cmd | while IFS= read -r line ; do
-	version=$(echo $line | cut -d: -f1)
-	label=$(echo $line | cut -d: -f2)
-	blob=$(echo $line | cut -d: -f3)
-	id=$(echo $line | cut -d: -f4)
+	version=$(printf '%s\n' $line | cut -d: -f1)
+	label=$(printf '%s\n' $line | cut -d: -f2)
+	blob=$(printf '%s\n' $line | cut -d: -f3)
+	id=$(printf '%s\n' $line | cut -d: -f4)
 
 	data=$(printf '%s' $blob | base64_d_pw | gpg_decrypt ; printf 'x') || {
 		error_pw "Cannot decrypt the entry at $DB:$id (gpg exited with error_pw code $?)."
@@ -98,11 +98,11 @@ eval $db_cmd | while IFS= read -r line ; do
 	}
 	data=${data%x}
 
-	fields=$(echo "$data" | tail -n +2)
+	fields=$(printf '%s\n' "$data" | tail -n +2)
 	all_fields=$(printf '%s\n%s\n%s' "ID: $id" "Label: $label" "$fields")
 
 	field_matched=false
-	echo "$all_fields" | while IFS= read -r field ; do
+	printf '%s\n' "$all_fields" | while IFS= read -r field ; do
 		if [ -z "$pattern" ] || matches_field "$pattern" "$field" "$search_field" ; then
 			exit 1
 		fi
@@ -112,7 +112,7 @@ eval $db_cmd | while IFS= read -r line ; do
 		continue
 	fi
 
-	password=$(echo "$data" | head -n 1)
+	password=$(printf '%s\n' "$data" | head -n 1)
 	field="$password"
 
 	if [ -n "$show_field" ] ; then

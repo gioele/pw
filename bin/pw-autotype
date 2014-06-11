@@ -58,14 +58,14 @@ commands=$(printf '%s\n' "$data" | sed -e 's/\({[^}]\+}\)/\1\n/g' | sed -e 's/\(
 gui_send_key alt+Tab # FIXME: read Auto-Type-Window field
 
 printf '%s' "$commands" | while IFS= read -r cmd ; do
-	is_command=`case "$cmd" in {*) echo true ;; *) echo false ;; esac`
+	is_command=`case "$cmd" in {*) echo 'true' ;; *) echo 'false' ;; esac`
 
 	if ! $is_command ; then
 		gui_type "$cmd"
 		continue
 	fi
 
-	request=$(echo "$cmd" | sed -e 's/.\(.*\)./\1/')
+	request=$(printf '%s\n' "$cmd" | sed -e 's/.\(.*\)./\1/')
 
 	case "$request" in
 		ENTER) gui_send_key Return ;;
