@@ -45,6 +45,9 @@ pw=$($PW_SHOW_GOOD -l 'entry5')
 echo "...searches only in labels (part 2, not in other fields)"
 $PW_SHOW_GOOD -l 'hidden-entry6' && failed || ok
 
+echo "...requires a label/pattern when a field is specified"
+$PW_SHOW_GOOD -l && failed || ok
+
 echo "...shows only the requested field"
 pin=$($PW_SHOW_GOOD -f 'PIN' 'hidden-entry6')
 [ "$pin" = "66" ] && ok || failed

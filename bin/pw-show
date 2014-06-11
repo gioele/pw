@@ -8,6 +8,13 @@ LIB_DIR="`dirname $0`/../lib/pw"
 . "${LIB_DIR}/configuration.sh"
 . "${LIB_DIR}/functions.sh"
 
+check_args () {
+	if [ -n "$search_field" -a -z "$pattern" ] ; then
+		echo "ERROR: requested to search in field \`\`$search_field'' but no PATTERN specified." >&2
+		exit 1
+	fi
+}
+
 help () {
 	cat <<-EOD
 	Usage: pw-show [OPTION] [PATTERN]
@@ -33,7 +40,7 @@ show_field=''
 search_field=''
 pattern=''
 
-options=$(getopt --name pw-show -o acd:f:ls:h -l all,complete,db,field:,label-only:,search-field:,help -- "$@") || help
+options=$(getopt --name pw-show -o acd:f:ls:h -l all,complete,db,field:,label-only,search-field:,help -- "$@") || help
 eval set -- "$options"
 
 while [ $# -gt 0 ] ; do
@@ -42,7 +49,7 @@ while [ $# -gt 0 ] ; do
 		-c|--complete) opt_complete_output=true ;;
 		-d|--db) DB="$2" ; shift ;;
 		-f|--field) show_field="$2" ; shift ;;
-		-l|--label-only) search_field='Label' ; pattern="$2" ; shift ;;
+		-l|--label-only) search_field='Label' ;;
 		-s|--search-field) search_field="$2" ; shift ;;
 		-h|--help) help ;;
 		--) shift ; break ;;
@@ -52,6 +59,8 @@ while [ $# -gt 0 ] ; do
 done
 [ $# -ne 0 ] && pattern=$1
 [ -z "$pattern" ] && opt_show_all=true
+
+check_args
 
 db_cmd="cat '$DB'"
 if [ "$search_field" = 'Label' ] ; then
