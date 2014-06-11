@@ -56,7 +56,9 @@ We will use the following data:
 
     pwFRIENDS
     User: mel@friends.example.net
-    Host: http://login.example.net/friends
+    URL: http://login.example.net/friends
+    PIN: 1923
+    Auto-Type: {USERNAME}{TAB}{PASSWORD}{TAB}{FIELD-PIN}{ENTER}
 
 Once you save that files and exit the text editor, pw will store the result
 in the default database: `$XDG_DATA_HOME/pw/passwords` (usually
@@ -92,11 +94,17 @@ or all the passwords together with all the other data:
     Label:
     pwFRIENDS
     User: mel@friends.example.net
-    Host: http://login.example.net/friends
+    URL: http://login.example.net/friends
+    PIN: 1923
 
     ID: 34c6c91107d2aae2ae64cead56e85cc9a5e0ab40
     Label: mel@office.example.com
     pwOFFICE
+
+or let pw type the password for you:
+
+    $ pw-autotype mel@friends.example.net
+    # returns to the previous window, enters username, password, PIN
 
 
 Composition with other unix tools

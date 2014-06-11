@@ -23,6 +23,10 @@ gpg_decrypt () {
 	gpg ${opts} --decrypt --batch --quiet 2>/dev/null
 }
 
+gui_send_key () { xdotool key --clearmodifiers "$1" ; }
+
+gui_type () { xdotool type "$1" ; }
+
 matches_field () {
 	pattern="$1"
 	field="$2"
