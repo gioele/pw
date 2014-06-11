@@ -51,3 +51,6 @@ $PW_SHOW_GOOD -l && failed || ok
 echo "...shows only the requested field"
 pin=$($PW_SHOW_GOOD -f 'PIN' 'hidden-entry6')
 [ "$pin" = "66" ] && ok || failed
+
+echo "...refuses to show only one field when using --complete"
+$PW_SHOW_GOOD -f 'PIN' -c 'hidden-entry6' && failed || ok

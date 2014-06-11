@@ -13,6 +13,11 @@ check_args () {
 		echo "ERROR: requested to search in field \`\`$search_field'' but no PATTERN specified." >&2
 		exit 1
 	fi
+
+	if [ -n "$show_field" ] && $opt_complete_output ; then
+		echo "ERROR: requested to show only field \`\`$show_field'' but also all fields." >&2
+		exit 1
+	fi
 }
 
 help () {
