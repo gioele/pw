@@ -16,6 +16,7 @@ help () {
 	  -a, --all         Show all entries that match PATTERN
 	  -c, --complete    Display all data, not just the password
 	  -d, --db FILE     Use FILE as the password database
+	  -f, --field FIELD Show only the specified FIELD
 	  -l, --label-only  Search only in labels, equivalent to --search-field=Label
 	  -s, --search-field FIELD  Search only in the specified field
 
@@ -28,10 +29,11 @@ help () {
 
 opt_show_all=false
 opt_complete_output=false
+show_field=''
 search_field=''
 pattern=''
 
-options=$(getopt --name pw-show -o acld:s:h -l all,complete,label-only,db:,search-field:,help -- "$@") || help
+options=$(getopt --name pw-show -o acd:f:ls:h -l all,complete,db,field:,label-only:,search-field:,help -- "$@") || help
 eval set -- "$options"
 
 while [ $# -gt 0 ] ; do
@@ -39,6 +41,7 @@ while [ $# -gt 0 ] ; do
 		-a|--all) opt_show_all=true ;;
 		-c|--complete) opt_complete_output=true ;;
 		-d|--db) DB="$2" ; shift ;;
+		-f|--field) show_field="$2" ; shift ;;
 		-l|--label-only) search_field='Label' ; pattern="$2" ; shift ;;
 		-s|--search-field) search_field="$2" ; shift ;;
 		-h|--help) help ;;
@@ -96,15 +99,20 @@ eval $db_cmd | while IFS= read -r line ; do
 	fi
 
 	password=$(echo "$data" | head -n 1)
+	field="$password"
+
+	if [ -n "$show_field" ] ; then
+		field=$(printf '%s\n' "$data" | grep "^${show_field}:" | cut -d' ' -f2-)
+	fi
 
 	if $opt_complete_output ; then
 		printf '%s\n%s\n' "ID: $id" "Label: $label"
 		printf '%s' "$data"
 	else
 		if $opt_show_all ; then
-			printf '%s\t%s' "$id" "$password"
+			printf '%s\t%s' "$id" "$field"
 		else
-			printf '%s' "$password"
+			printf '%s' "$field"
 			is_output_interactive && printf '\n'
 		fi
 	fi
