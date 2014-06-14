@@ -2,7 +2,9 @@ red=$(tput setab 1)
 reset=$(tput sgr0)
 
 ok () { echo "ok" ; echo ; }
+ok_step ()  { echo "ok (preparatory step)" ; }
 failed () { echo $red "FAILED" $reset ; echo ; }
+failed_step () { echo $red "FAILED (preparatory step)" $reset ; }
 
 fixtures_dir="`dirname $0`/fixtures"
 

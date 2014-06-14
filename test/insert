@@ -14,7 +14,7 @@ rm -f "$db"
 
 echo "...does not insert the same label twice"
 db=$(mktemp)
-echo foo | $PW_INSERT -d "$db" -t - "test" && ok || failed
+echo foo | $PW_INSERT -d "$db" -t - "test" && ok_step || failed_step
 echo faa | $PW_INSERT -d "$db" -t - "test" && failed || ok
 rm -f "$db"
 
