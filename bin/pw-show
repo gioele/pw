@@ -97,6 +97,11 @@ eval $db_cmd | while IFS= read -r line ; do
 		continue
 	fi
 
+	encrypted_with_pk "$version" || {
+		error_pw "No known encryption method applies to \`\`$id''"
+		continue
+	}
+
 	data=$(printf '%s' $blob | base64_d_pw | gpg_decrypt ; printf 'x') || {
 		error_pw "Cannot decrypt the entry at $DB:$id (gpg exited with error_pw code $?)."
 		msg_pw "Remove the broken entry with \`\`pw-edit -d $DB -r $id''."

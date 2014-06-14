@@ -8,6 +8,8 @@ is_output_interactive () { test -t 1 ; }
 
 extract_version_number () { echo "$1" | cut -c 1 ; }
 
+encrypted_with_pk () { echo "$1" | grep -q "p" ; }
+
 mktemp_pw () { mktemp ${TMPDIR:-/tmp}/pw.tmpXXXXXXXX ; }
 
 auto_rm_cmd () { echo "trap 'rm -f \"$1\"' HUP QUIT PIPE TERM EXIT ; trap 'rm -f \"$1\" ; trap - INT ; kill -INT $$' INT" ; }
