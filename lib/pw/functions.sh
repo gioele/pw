@@ -6,6 +6,8 @@ msg_pw () { printf '%s\n' "$1" >&2 ; }
 is_input_interactive () { test -t 0 ; }
 is_output_interactive () { test -t 1 ; }
 
+extract_version_number () { echo "$1" | cut -c 1 ; }
+
 mktemp_pw () { mktemp ${TMPDIR:-/tmp}/pw.tmpXXXXXXXX ; }
 
 auto_rm_cmd () { echo "trap 'rm -f \"$1\"' HUP QUIT PIPE TERM EXIT ; trap 'rm -f \"$1\" ; trap - INT ; kill -INT $$' INT" ; }

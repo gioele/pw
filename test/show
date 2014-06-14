@@ -3,6 +3,7 @@
 . `dirname $0`/support.sh
 
 PW_SHOW_GOOD="$PW_SHOW -d ${fixtures_dir}/good"
+PW_SHOW_BAD="$PW_SHOW -d ${fixtures_dir}/bad"
 
 echo "pw-show ($PW_SHOW)..."
 echo
@@ -22,7 +23,7 @@ num_records=$($PW_SHOW -d ${fixtures_dir}/good | wc -l)
 
 echo "...complains about broken records but goes on"
 num_records=$($PW_SHOW -d ${fixtures_dir}/bad | wc -l)
-[ "$num_records" -eq 6 ] && ok || failed
+[ "$num_records" -eq 5 ] && ok || failed
 
 echo "...returns an error if it cannot find any matching entry"
 $PW_SHOW_GOOD 'non-existing' && failed || ok
@@ -54,3 +55,6 @@ pin=$($PW_SHOW_GOOD -f 'PIN' 'hidden-entry6')
 
 echo "...refuses to show only one field when using --complete"
 $PW_SHOW_GOOD -f 'PIN' -c 'hidden-entry6' && failed || ok
+
+echo "...refuses to decode an entry with an unknown version number"
+$PW_SHOW_BAD -l 'entry4' && failed || ok

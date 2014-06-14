@@ -91,6 +91,12 @@ eval $db_cmd | while IFS= read -r line ; do
 	blob=$(printf '%s\n' $line | cut -d: -f3)
 	id=$(printf '%s\n' $line | cut -d: -f4)
 
+	version_number=$(extract_version_number "$version")
+	if [ "$version_number" != "1" ] ; then
+		msg_pw "Unknown version number \`\`$version_number'' in \`\`$id''; skipped entry."
+		continue
+	fi
+
 	data=$(printf '%s' $blob | base64_d_pw | gpg_decrypt ; printf 'x') || {
 		error_pw "Cannot decrypt the entry at $DB:$id (gpg exited with error_pw code $?)."
 		msg_pw "Remove the broken entry with \`\`pw-edit -d $DB -r $id''."
