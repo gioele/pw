@@ -68,8 +68,8 @@ else
 	old_line=$(printf '%s\n' "$old_line" | head -n1)
 	old_label=$(printf '%s\n' $old_line | cut -d: -f2)
 
-	file=$(mktemp_pw)
-	eval $(auto_rm_cmd "$file")
+	temp_db=$(mktemp_pw)
+	eval $(auto_rm_cmd "$temp_db")
 
 	# http://stackoverflow.com/questions/24078578/launching-an-editor-from-a-pipelined-command
 	set +e #FIXME: cmd-line editors need the terminal, can we release it?
@@ -79,14 +79,14 @@ else
 		exit 1
 	}
 
-	printf '%s\n' "$old_data" | `dirname $0`/pw-insert -d "$file" -t - "$old_label" || {
+	printf '%s\n' "$old_data" | `dirname $0`/pw-insert -d "$temp_db" -t - "$old_label" || {
 		msg_pw "Entry '$handle' not updated."
 		exit 1
 	}
 
 	set -e #FIXME
 
-	new_line=$(cat $file)
+	new_line=$(cat $temp_db)
 
 	sed_expr="s#^${old_line}\$#${new_line}#"
 fi
