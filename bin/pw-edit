@@ -74,7 +74,7 @@ else
 	# http://stackoverflow.com/questions/24078578/launching-an-editor-from-a-pipelined-command
 	set +e #FIXME: cmd-line editors need the terminal, can we release it?
 
-	old_data=$(`dirname $0`/pw-show -c "$handle" | tail -n +3) || {
+	old_data=$(`dirname $0`/pw-show -d "$DB" -c "$handle" | tail -n +3) || {
 		error_pw "Cannot extract the data to be modified."
 		exit 1
 	}
