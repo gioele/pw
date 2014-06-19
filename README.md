@@ -145,6 +145,28 @@ Databases can be stored anywhere.
     # shows the entries in /home/DevOps-Team/credentials
 
 
+### A trick: embedding databases in other documents
+
+pw and its file format have been designed so that it is possible to
+embed a password database inside other text documents, for example Markdown
+files.
+
+The following snippet shows an hybrid Markdown/pw file:
+
+    Weekly passwords
+    ================
+
+    The passwords for week 32 are:
+
+    ```
+    1s::hQEMAyoUjLBw7S4i2Yr8Pz77w==:2969e3cfde476bcd0c313
+    1p::hQEMAyoUjowLJBwmRX46yXBdrg==:444aa22b43692f1b6f4a30e
+    ```
+
+pw will ignore the line that it does not understand and update the entries
+in place to preserve the rest of the document.
+
+
 How does pw work? Some information about its format
 ---------------------------------------------------
 
