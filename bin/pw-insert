@@ -52,6 +52,8 @@ check_config () {
 
 check_config
 
+DB=$(file_for_db "$DB")
+
 [ -z "$label" ] || ! grep -q ":${label}:" "$DB" 2>/dev/null || {
 	error_pw "There is already an entry with label \`\`${label}''"
 	exit 1

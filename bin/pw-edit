@@ -54,6 +54,8 @@ check_opts () {
 
 check_opts
 
+DB=$(file_for_db "$DB")
+
 if $opt_change_label ; then
 	sed_expr="0,\\#:$handle:#{s#:$handle:#:$new_label:#}"
 elif $opt_remove_entry ; then

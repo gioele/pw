@@ -121,6 +121,30 @@ all the stored passwords that are shorter than 6 characters.
     done
 
 
+Multiple databases
+------------------
+
+It is possible to store password in multiple databases.
+Databases are stored by default in `$XDG_DATA_HOME/pw` (usually
+`~/.local/share/pw/`; this is configurable) but can also
+be everywhere else.
+
+The `password` database is used by default.
+
+    $ pw-show
+    # shows the entries in $XDG_DATA_HOME/pw/passwords
+
+Other databases can be selected using the `--database=FILE` option.
+
+    $ pw-show -d credit-cards
+    # shows the entries in $XDG_DATA_HOME/pw/credit-cards
+
+Databases can be stored anywhere.
+
+    $ pw-show -d /home/DevOps-Team/credentials
+    # shows the entries in /home/DevOps-Team/credentials
+
+
 How does pw work? Some information about its format
 ---------------------------------------------------
 

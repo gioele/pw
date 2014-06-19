@@ -1,4 +1,4 @@
-DB=${XDG_DATA_HOME:-$HOME/.local/share}/pw/passwords
+DB=passwords
 CONFIG_FILE=${XDG_CONFIG_HOME:-$HOME/.config}/pw
 
 CONFIG_DIRS=$(echo "${XDG_CONFIG_DIRS:-/etc/xdg}" | tr ':' '\n')

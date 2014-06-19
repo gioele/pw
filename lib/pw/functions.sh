@@ -6,6 +6,18 @@ msg_pw () { printf '%s\n' "$1" >&2 ; }
 is_input_interactive () { test -t 0 ; }
 is_output_interactive () { test -t 1 ; }
 
+file_for_db () {
+	case "$1" in
+		../*|./*|/*)
+			echo "$1" ;;
+		*)
+			[ -f "$1" ] && echo "$1" && exit
+
+			data_dir=${XDG_DATA_HOME:-$HOME/.local/share}
+			echo "$data_dir/pw/$1" ;;
+	esac
+}
+
 extract_version_number () { echo "$1" | cut -c 1 ; }
 
 encrypted_with_pk () { echo "$1" | grep -q "p" ; }

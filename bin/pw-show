@@ -67,6 +67,8 @@ check_args () {
 
 check_args
 
+DB=$(file_for_db "$DB")
+
 db_cmd="cat '$DB'"
 if [ "$search_field" = 'Label' ] ; then
 	db_cmd="$db_cmd | grep ':${pattern}:'"
