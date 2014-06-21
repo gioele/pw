@@ -1,0 +1,28 @@
+# bash completion for pw                                   -*- shell-script -*-
+
+_pw()
+{
+    local cur prev words cword
+    _init_completion || return
+
+    case $prev in
+        -h|--help)
+            return 0
+            ;;
+        -d|--db)
+            local db_dir=${XDG_DATA_HOME:-$HOME/.local/share/pw}
+            dbs=$(find $db_dir -type f -print | sed -e "s#^${db_dir}/##")
+            COMPREPLY=( $( compgen -W "$dbs" -- "$cur" ) )
+            return 0
+            ;;
+    esac
+
+    if [[ "$cur" == -* ]]; then
+        local helpopts=$( _parse_help "$1" )
+        COMPREPLY=( $( compgen -W "${helpopts//#/}" -- "$cur" ) )
+        return 0
+    fi
+} &&
+complete -F _pw pw-edit pw-insert pw-show
+
+# ex: ts=4 sw=4 et filetype=sh
