@@ -1,0 +1,10 @@
+#------------------------------------------------------------------------------
+# pw: file(1) magic for pw password databases
+
+#
+# Version 1 stores its entries as a single lines with four fields delimited by
+# a colon ':'.
+#
+
+0	string	1
+>1	regex	[a-z]+:(.*)?:[a-zA-Z0-9=_-]+:[a-zA-Z0-9]+$	pw password database, version 1
