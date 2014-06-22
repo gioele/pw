@@ -36,7 +36,7 @@ Then you add a password interactively
 pw will use `$EDITOR` and present you a template similar to that of
 `git commit`.
 
-
+     
     # ^^^^ Insert your password as the first line of the file ^^^^
     #
     # Here is a suggestion:
