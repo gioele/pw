@@ -5,13 +5,14 @@ _pw()
     local cur prev words cword
     _init_completion || return
 
+    local db_dir=${XDG_DATA_HOME:-$HOME/.local/share/pw}/
+
     case $prev in
         -h|--help)
             return 0
             ;;
         -d|--db)
-            local db_dir dbs
-            db_dir=${XDG_DATA_HOME:-$HOME/.local/share/pw}/
+            local dbs
             dbs=$(find $db_dir -type f -print)
             dbs=${dbs//$db_dir/}
 
@@ -27,6 +28,14 @@ _pw()
         COMPREPLY=( $( compgen -W "${helpopts//#/}" -- "$cur" ) )
         return 0
     fi
+
+    local db labels ids
+    db='passwords' # FIXME: support for -d DB
+    labels=$( cat "$db_dir/$db" | cut -d : -f 2 )
+    ids=$( cat "$db_dir/$db" | cut -d : -f 4 )
+
+    local IFS=$'\n'
+    COMPREPLY=( $( compgen -W "$labels$IFS$ids" -- "$cur" ) )
 } &&
 complete -F _pw pw-autotype pw-edit pw-insert pw-show
 
