@@ -11,8 +11,9 @@ _pw()
             ;;
         -d|--db)
             local db_dir dbs
-            db_dir=${XDG_DATA_HOME:-$HOME/.local/share/pw}
-            dbs=$(find $db_dir -type f -print | sed -e "s#^${db_dir}/##")
+            db_dir=${XDG_DATA_HOME:-$HOME/.local/share/pw}/
+            dbs=$(find $db_dir -type f -print)
+            dbs=${dbs//$db_dir/}
             COMPREPLY=( $( compgen -W "$dbs" -- "$cur" ) )
             return 0
             ;;
