@@ -14,6 +14,9 @@ _pw()
             db_dir=${XDG_DATA_HOME:-$HOME/.local/share/pw}/
             dbs=$(find $db_dir -type f -print)
             dbs=${dbs//$db_dir/}
+
+            local IFS=$'\n'
+            compopt -o filenames
             COMPREPLY=( $( compgen -W "$dbs" -- "$cur" ) )
             return 0
             ;;
