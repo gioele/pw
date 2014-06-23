@@ -12,13 +12,19 @@ _pw()
             return 0
             ;;
         -d|--db)
-            local dbs
-            dbs=$(find $db_dir -type f -print)
-            dbs=${dbs//$db_dir/}
+            local dbs opts local_path_re
+            local_path_re='^(/|\.|~)'
+            if [[ "${cur}" =~ $local_path_re ]] ; then
+                opts="-f"
+                dbs="*"
+            else
+                dbs=$( find $db_dir -type f -print )
+                dbs=${dbs//$db_dir/}
+            fi
 
             local IFS=$'\n'
             compopt -o filenames
-            COMPREPLY=( $( compgen -W "$dbs" -- "$cur" ) )
+            COMPREPLY=( $( compgen $opts -W "$dbs" -- "$cur" ) )
             return 0
             ;;
     esac
