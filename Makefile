@@ -6,7 +6,7 @@ all:
 .PHONY: install
 install:
 	mkdir -p $(PREFIX)/bin
-	for exe in pw-autotype pw-edit pw-insert pw-show ; do \
+	for exe in pw-autotype pw-diff pw-edit pw-insert pw-show ; do \
 		cp bin/$${exe} $(PREFIX)/bin ; \
 		chmod a+rx $(PREFIX)/bin/$${exe} ; \
 	done
