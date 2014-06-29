@@ -1,0 +1,64 @@
+#!/bin/sh
+
+set -u
+set -e
+
+LIB_DIR="`dirname $0`/../lib/pw"
+
+. "${LIB_DIR}/configuration.sh"
+. "${LIB_DIR}/functions.sh"
+
+help () {
+	cat <<-EOD
+	Usage: pw-diff [OPTION] FILE
+	Compare the default database with the database in FILE
+
+	  -d, --db FILE     Use FILE as the default password database
+
+	  -h, --help        Display this help and exit
+	EOD
+	exit
+}
+
+other_db=''
+
+options=$(getopt --name pw-diff -o d:h -l db,help -- "$@") || help
+eval set -- "$options"
+
+while [ $# -gt 0 ] ; do
+	case "$1" in
+		-d|--db) DB="$2" ; shift ;;
+		-h|--help) help ;;
+		--) shift ; break ;;
+		*) break ;;
+	esac
+	shift
+done
+[ $# -ne 0 ] && other_db=$1
+
+check_args () {
+	if [ -z "$other_db" ] ; then
+		error_pw "No FILE to compare has been specified"
+		exit 1
+	fi
+}
+
+check_args
+
+DB=$(file_for_db "$DB")
+
+temp_dir=$(mktemp_dir_pw)
+eval $(auto_rm_dir_cmd "$temp_dir")
+
+main_db_content="$temp_dir/main_db"
+other_db_content="$temp_dir/other_db"
+
+mkfifo "$main_db_content"
+mkfifo "$other_db_content"
+
+pw-show -c -d "$DB" > $main_db_content &
+pw-show -c -d "$other_db" > $other_db_content &
+
+diff -u $main_db_content $other_db_content | sed -e "s#${temp_dir}/##"
+
+# This is free software released into the public domain (CC0 license).

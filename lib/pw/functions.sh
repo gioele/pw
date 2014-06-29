@@ -23,8 +23,10 @@ extract_version_number () { echo "$1" | cut -c 1 ; }
 encrypted_with_pk () { echo "$1" | grep -q "p" ; }
 
 mktemp_pw () { mktemp ${TMPDIR:-/tmp}/pw.tmpXXXXXXXX ; }
+mktemp_dir_pw () { mktemp -d ${TMPDIR:-/tmp}/pw.tmpXXXXXXXX ; }
 
 auto_rm_cmd () { echo "trap 'rm -f \"$1\"' HUP QUIT PIPE TERM EXIT ; trap 'rm -f \"$1\" ; trap - INT ; kill -INT $$' INT" ; }
+auto_rm_dir_cmd () { echo "trap 'rm -Rf \"$1\"' HUP QUIT PIPE TERM EXIT ; trap 'rm -f \"$1\" ; trap - INT ; kill -INT $$' INT" ; }
 
 base64_pw () { base64 -w 0 | tr '/+' '_-' ; }
 base64_d_pw () { tr '_-' '/+' | base64 -d 2>/dev/null ; }
