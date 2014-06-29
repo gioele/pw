@@ -43,6 +43,6 @@ _pw()
     local IFS=$'\n'
     COMPREPLY=( $( compgen -W "$labels$IFS$ids" -- "$cur" ) )
 } &&
-complete -F _pw pw-autotype pw-edit pw-insert pw-show
+complete -F _pw pw-autotype pw-diff pw-edit pw-insert pw-show
 
 # ex: ts=4 sw=4 et filetype=sh
