@@ -17,7 +17,7 @@ The main points of pw are:
   encryption. Or both.
 * No information about the accounts is stored in clear-text.
 * All the work is done using only GPG and Unix tools.
-* The output is easy to use pipeline with other tools.
+* The output is easy to use in pipeline with other tools.
 * Follows the [XDG Base Directory specification](http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html):
   no clutter in your home directory.
 
