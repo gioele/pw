@@ -121,6 +121,23 @@ all the stored passwords that are shorter than 6 characters.
     done
 
 
+Git integration
+---------------
+
+pw itself does not know anything about git, but its format has been designed
+to work well with git and other version control systems. No configuration is
+needed to use pw with git.
+
+To make pw even more awesome when used in git, run the script
+`enable-git-integration.sh` (in the `extras/` directory). It will:
+
+* set up a special merge strategy that avoids merge conflicts in passwords
+  files;
+* tell git to use `pw-diff` to find differences between different revisions
+  of the password databases (run the script with the `--textconv` option if
+  you prefer to set up git to use a slower but nicer output).
+
+
 Multiple databases
 ------------------
 
