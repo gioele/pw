@@ -28,6 +28,7 @@ Usage
 First you need to tell pw which key should be used to encrypt the data.
 
     $ echo "GPG_KEY=mel@example.com" > ~/.config/pw
+    $ chmod 600 ~/.config/pw
 
 Then you add a password interactively
 
