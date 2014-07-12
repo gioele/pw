@@ -50,14 +50,30 @@ DB=$(file_for_db "$DB")
 temp_dir=$(mktemp_dir_pw)
 eval $(auto_rm_dir_cmd "$temp_dir")
 
-main_db_content="$temp_dir/main_db"
-other_db_content="$temp_dir/other_db"
+patch=$(diff -u1 "$DB" "$other_db") || {
+	if [ $? -ne 1 ] ; then
+		error_pw "Cannot compare \`\`$DB'' to \`\`$other_db''"
+		exit 1
+	fi
+}
 
+main_db_lines="$temp_dir/main_db_lines"
+other_db_lines="$temp_dir/other_db_lines"
+mkfifo "$main_db_lines"
+mkfifo "$other_db_lines"
+
+# Create smaller DBs that contain only the changes and a bit of context
+printf "%s\n" "$patch" | tail -n +4 | grep '^\( \|-\)' | cut -c 2-> $main_db_lines &
+printf "%s\n" "$patch" | tail -n +4 | grep '^\( \|+\)' | cut -c 2- > $other_db_lines &
+
+main_db_content="$temp_dir/main_db_content"
+other_db_content="$temp_dir/other_db_content"
 mkfifo "$main_db_content"
 mkfifo "$other_db_content"
 
-pw-show -c -d "$DB" > $main_db_content &
-pw-show -c -d "$other_db" > $other_db_content &
+# Show the content of the smaller DBs, this is what will be compared
+pw-show -c -d "$main_db_lines" > $main_db_content &
+pw-show -c -d "$other_db_lines" > $other_db_content &
 
 diff -u $main_db_content $other_db_content | sed -e "s#${temp_dir}/##"
 
