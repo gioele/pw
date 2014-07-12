@@ -75,6 +75,8 @@ mkfifo "$other_db_content"
 pw-show -c -d "$main_db_lines" > $main_db_content &
 pw-show -c -d "$other_db_lines" > $other_db_content &
 
-diff -u $main_db_content $other_db_content | sed -e "s#${temp_dir}/##"
+diff -u $main_db_content $other_db_content | \
+	sed -e "1s#${main_db_content}#${DB}#" | \
+	sed -e "2s#${other_db_content}#${other_db}#"
 
 # This is free software released into the public domain (CC0 license).
