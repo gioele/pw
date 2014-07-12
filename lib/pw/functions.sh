@@ -7,6 +7,8 @@ is_input_interactive () { test -t 0 ; }
 is_output_interactive () { test -t 1 ; }
 
 file_for_db () {
+	local data_dir
+
 	case "$1" in
 		../*|./*|/*)
 			echo "$1" ;;
@@ -34,12 +36,14 @@ base64_d_pw () { tr '_-' '/+' | base64 -d 2>/dev/null ; }
 sha1_pw () { sha1sum ; }
 
 gpg_encrypt () {
+	local key opts
 	key="$1" ; shift
 	opts=${GPG_OPTS:-}
 	gpg ${opts} --encrypt --recipient "$key" --batch --quiet
 }
 
 gpg_decrypt () {
+	local opts
 	opts=${GPG_OPTS:-}
 	gpg ${opts} --decrypt --batch --quiet 2>/dev/null
 }
@@ -49,6 +53,7 @@ gui_send_key () { xdotool key --clearmodifiers "$1" ; }
 gui_type () { xdotool type "$1" ; }
 
 matches_field () {
+	local pattern field key
 	pattern="$1"
 	field="$2"
 	key="$3"
