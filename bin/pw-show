@@ -152,6 +152,7 @@ eval $db_cmd | while IFS= read -r line ; do
 done || match_found=true
 
 if [ -n "$pattern" ] && ! $match_found ; then
+	error_pw "No entry in \`\`$DB'' matches the pattern \`\`$pattern''"
 	exit 1
 fi
 
