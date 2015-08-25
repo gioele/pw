@@ -87,7 +87,9 @@ fi
 
 match_found=false
 
-eval $db_cmd | while IFS= read -r line ; do
+while IFS= read -r line ; do
+	[ -z "$line" ] && continue
+
 	version=$(printf '%s\n' $line | cut -d: -f1)
 	label=$(printf '%s\n' $line | cut -d: -f2)
 	blob=$(printf '%s\n' $line | cut -d: -f3)
@@ -125,6 +127,8 @@ eval $db_cmd | while IFS= read -r line ; do
 		continue
 	fi
 
+	match_found=true
+
 	password=$(printf '%s\n' "$data" | head -n 1)
 	field="$password"
 
@@ -144,12 +148,13 @@ eval $db_cmd | while IFS= read -r line ; do
 		fi
 	fi
 
-	if ! $opt_show_all ; then
-		exit 1
-	fi
 
-	printf '\n'
-done || match_found=true
+	if $opt_show_all ; then
+		printf '\n'
+	fi
+done <<EODB
+$(eval $db_cmd)
+EODB
 
 if [ -n "$pattern" ] && ! $match_found ; then
 	error_pw "No entry in \`\`$DB'' matches the pattern \`\`$pattern''"
