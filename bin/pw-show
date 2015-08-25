@@ -150,9 +150,9 @@ while IFS= read -r line ; do
 		fi
 	fi
 
-
-	if $opt_show_all ; then
-		printf '\n'
+	printf '\n'
+	if ! $opt_show_all ; then
+		break
 	fi
 done <<EODB
 $(eval $db_cmd)
