@@ -29,7 +29,7 @@ rmdir /tmp/xdg/pw
 rmdir /tmp/xdg
 
 echo "...with no params shows all records"
-num_records=$($PW_SHOW -d ${fixtures_dir}/good | wc -l)
+num_records=$($PW_SHOW_GOOD | wc -l)
 [ "$num_records" -eq 8 ] && ok || failed
 
 echo "...with a pattern shows only the first matching record"
@@ -41,7 +41,7 @@ num_records=$($PW_SHOW_GOOD --all 'hidden-' | wc -l)
 [ "$num_records" -eq 3 ] && ok || failed
 
 echo "...complains about broken records but goes on"
-num_records=$($PW_SHOW -d ${fixtures_dir}/bad | wc -l)
+num_records=$($PW_SHOW_BAD | wc -l)
 [ "$num_records" -eq 5 ] && ok || failed
 
 echo "...does not return an error if a matching entry can be found"
