@@ -116,9 +116,11 @@ while IFS= read -r line ; do
 	fields=$(printf '%s\n' "$data" | tail -n +2)
 	all_fields=$(printf '%s\n%s\n%s' "ID: $id" "Label: $label" "$fields")
 
+	search_pattern=".*$pattern.*"
+
 	field_matched=false
 	printf '%s\n' "$all_fields" | while IFS= read -r field ; do
-		if [ -z "$pattern" ] || matches_field "$pattern" "$field" "$search_field" ; then
+		if [ -z "$pattern" ] || matches_field "$search_pattern" "$field" "$search_field" ; then
 			exit 1
 		fi
 	done || field_matched=true

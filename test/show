@@ -52,6 +52,10 @@ echo "...searches on all fields"
 pw=$($PW_SHOW_GOOD 'hidden-entry6')
 [ "$pw" = "pw6" ] && ok || failed
 
+echo "...searches on all fields (partial search by default)"
+num_records=$($PW_SHOW_GOOD --all 'hidden' | wc -l)
+[ "$num_records" -eq 3 ] && ok || failed
+
 echo "...searches only certain fields (part 1, the correct ones)"
 pw=$($PW_SHOW_GOOD -s 'PIN' '66')
 [ "$pw" = "pw6" ] && ok || failed
