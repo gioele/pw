@@ -63,7 +63,7 @@ mkfifo "$main_db_lines"
 mkfifo "$other_db_lines"
 
 # Create smaller DBs that contain only the changes and a bit of context
-printf "%s\n" "$patch" | tail -n +4 | grep '^\( \|-\)' | cut -c 2-> $main_db_lines &
+printf "%s\n" "$patch" | tail -n +4 | grep '^\( \|-\)' | cut -c 2- > $main_db_lines &
 printf "%s\n" "$patch" | tail -n +4 | grep '^\( \|+\)' | cut -c 2- > $other_db_lines &
 
 main_db_content="$temp_dir/main_db_content"
