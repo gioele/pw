@@ -5,17 +5,13 @@ all:
 
 .PHONY: install
 install:
-	mkdir -p $(PREFIX)/bin
-	for exe in git-pw-diff pw-autotype pw-diff pw-edit pw-insert pw-show ; do \
-		cp bin/$${exe} $(PREFIX)/bin ; \
-		chmod a+rx $(PREFIX)/bin/$${exe} ; \
-	done
-	mkdir -p $(PREFIX)/lib/pw
-	chmod a+rx $(PREFIX)/lib/pw
-	for lib in configuration.sh functions.sh ; do \
-		cp lib/pw/$${lib} $(PREFIX)/lib/pw ; \
-		chmod a+r $(PREFIX)/lib/pw/$${lib} ; \
-	done
+	install bin/git-pw-diff $(PREFIX)/bin
+	install bin/pw-autotype $(PREFIX)/bin
+	install bin/pw-edit $(PREFIX)/bin
+	install bin/pw-insert $(PREFIX)/bin
+	install bin/pw-show $(PREFIX)/bin
+	install lib/pw/configuration.sh $(PREFIX)/lib/pw
+	install lib/pw/functions.sh $(PREFIX)/lib/pw
 
 .PHONY: test
 test: | test/fixtures/keys/secring.gpg test/fixtures/good
