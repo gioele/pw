@@ -1,0 +1,16 @@
+#!/bin/sh
+
+set -e
+set -u
+
+PW_GIT_PATH=$1
+PW_GIT_FILE_OLD=$2
+PW_GIT_HEX_OLD=$3
+PW_GIT_MODE_OLD=$4
+PW_GIT_FILE_NEW=$5
+PW_GIT_HEX_NEW=$6
+PW_GIT_MODE_NEW=$7
+
+exec pw-diff -d "$PW_GIT_FILE_OLD" "$PW_GIT_FILE_NEW"
+
+# This is free software released into the public domain (CC0 license).

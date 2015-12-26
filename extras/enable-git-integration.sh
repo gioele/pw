@@ -9,7 +9,7 @@ if [ "$1" = '--textconv' ] ; then
 	git config --global --unset diff.pw.command
 	git config --global diff.pw.textconv 'pw-show -c -d'
 else
-	git config --global diff.pw.command 'pw-diff -d $LOCAL $REMOTE'
+	git config --global diff.pw.command 'git pw-diff'
 	git config --global --unset diff.pw.textconv
 fi
 
