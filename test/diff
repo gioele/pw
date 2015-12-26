@@ -1,0 +1,42 @@
+#!/bin/sh
+
+. `dirname $0`/support.sh
+
+PW_DIFF_BASE="$PW_DIFF -d ${fixtures_dir}/good"
+DB_GOOD="${fixtures_dir}/good"
+DB_MODIFIED="${fixtures_dir}/modified"
+DB_MODIFIED_ADD="${fixtures_dir}/modified-add"
+DB_MODIFIED_DEL="${fixtures_dir}/modified-del"
+
+echo "pw-diff ($PW_DIFF)..."
+echo
+
+echo "...shows no differences between empty dbs"
+$PW_DIFF -d /dev/null /dev/null && ok || failed
+
+echo "...complains about missing base dbs"
+$PW_DIFF -d /tmp/does-not-exist /dev/null && failed || ok
+
+echo "...complains about missing modified dbs"
+$PW_DIFF -d /dev/null /tmp/does-not-exist && failed || ok
+
+echo "...shows no differences when comparing the same file"
+$PW_DIFF_BASE $DB_GOOD && ok || failed
+
+echo "...detects additions as such (in add-only file)"
+diff=$($PW_DIFF_BASE $DB_MODIFIED_ADD)
+(echo "$diff" | tail -n +5 | grep -v "^[@ +]") && failed || ok
+
+echo "...detects deletions as such (in del-only file)"
+diff=$($PW_DIFF_BASE $DB_MODIFIED_DEL)
+(echo "$diff" | tail -n +5 | grep -v "^[@ -]") && failed || ok
+
+echo "...detects additions as such"
+diff=$($PW_DIFF_BASE $DB_MODIFIED)
+num_adds=$(echo "$diff" | tail -n +5 | grep '^+' | wc -l)
+[ "$num_adds" -eq 4 ] && ok || failed
+
+echo "...detects modifications as such"
+diff=$($PW_DIFF_BASE $DB_MODIFIED)
+num_dels=$(echo "$diff" | tail -n +5 | grep '^-' | wc -l)
+[ "$num_dels" -eq $((4 + 6)) ] && ok || failed

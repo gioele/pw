@@ -21,6 +21,7 @@ install:
 test: | test/fixtures/keys/secring.gpg test/fixtures/good
 	test/show
 	test/insert
+	test/diff
 
 test/fixtures/keys/secring.gpg:
 	test/gen-keys

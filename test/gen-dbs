@@ -20,4 +20,18 @@ cat ${fixtures_dir}/good | \
 	sed -e '4 {s/^1/9/}' | \
 	cat > ${fixtures_dir}/bad
 
+# generate a modified database (only deletions)
+cat ${fixtures_dir}/good | \
+	sed -e '2d' | \
+	sed -e '6d' | \
+	cat > ${fixtures_dir}/modified-del
+
+# generate a modified database
+cp ${fixtures_dir}/modified-del ${fixtures_dir}/modified
+echo "pwADDITIONAL" | $PW_INSERT -d ${fixtures_dir}/modified -t- "entry-additional"
+
+# generate a modified database (only additions)
+cp ${fixtures_dir}/good ${fixtures_dir}/modified-add
+echo "pwADDITIONAL" | $PW_INSERT -d ${fixtures_dir}/modified-add -t- "entry-additional"
+
 # This is free software released into the public domain (CC0 license).
