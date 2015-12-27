@@ -22,7 +22,7 @@ help () {
 
 other_db=''
 
-options=$(getopt --name pw-diff -o d:h -l db,help -- "$@") || help
+options=$(getopt --name pw-diff -o d:h -l db:,help -- "$@") || help
 eval set -- "$options"
 
 while [ $# -gt 0 ] ; do
