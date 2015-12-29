@@ -2,7 +2,7 @@
 
 # set up an append-only strategy for merges and conflicts
 git config --global merge.pw.name 'Append-only merge strategy for pw databases'
-git config --global merge.pw.driver 'tmp=$(mktemp) ; (comm -12 %A %B ; comm -13 %O %A ; comm -13 %O %B ) >| $tmp ; mv $tmp %A'
+git config --global merge.pw.driver 'git pw-merge %O %A %B %L %P'
 
 # set up the diff program for password files
 if [ "$1" = '--textconv' ] ; then

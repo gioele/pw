@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -e
+set -u
+
+PW_GIT_O_ANCESTOR=$1
+PW_GIT_A_CURRENT=$2
+PW_GIT_B_OTHER=$3
+PW_GIT_L_MARKER_SIZE=$4
+PW_GIT_P_PATH=$5
+
+exec git merge-file -L "$PW_GIT_P_PATH" --union "$PW_GIT_A_CURRENT" "$PW_GIT_O_ANCESTOR" "$PW_GIT_B_OTHER"
+
+# This is free software released into the public domain (CC0 license).
