@@ -5,11 +5,13 @@ all:
 
 .PHONY: install
 install:
+	install -d $(PREFIX)/bin
 	install bin/git-pw-diff $(PREFIX)/bin
 	install bin/pw-autotype $(PREFIX)/bin
 	install bin/pw-edit $(PREFIX)/bin
 	install bin/pw-insert $(PREFIX)/bin
 	install bin/pw-show $(PREFIX)/bin
+	install -d $(PREFIX)/lib/pw
 	install lib/pw/configuration.sh $(PREFIX)/lib/pw
 	install lib/pw/functions.sh $(PREFIX)/lib/pw
 
