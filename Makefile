@@ -8,6 +8,7 @@ install:
 	install -d $(PREFIX)/bin
 	install bin/git-pw-diff $(PREFIX)/bin
 	install bin/pw-autotype $(PREFIX)/bin
+	install bin/pw-diff $(PREFIX)/bin
 	install bin/pw-edit $(PREFIX)/bin
 	install bin/pw-insert $(PREFIX)/bin
 	install bin/pw-show $(PREFIX)/bin
