@@ -55,6 +55,7 @@ check_opts () {
 check_opts
 
 DB=$(file_for_db "$DB")
+DB_OLD="${DB}.old"
 
 if $opt_change_label ; then
 	sed_expr="0,\\#:$handle:#{s#:$handle:#:$new_label:#}"
@@ -89,6 +90,12 @@ else
 
 	sed_expr="s#^${old_line}\$#${new_line}#"
 fi
+
+# Copy old entry in backup file
+
+echo "${old_line}" > "${DB_OLD}"
+
+# Replace old entry with new entry
 
 sed -i.bak -e "$sed_expr" "$DB"
 rm -f "${DB}.bak"
