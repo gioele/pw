@@ -57,18 +57,19 @@ check_opts
 DB=$(file_for_db "$DB")
 DB_OLD="${DB}.old"
 
+old_line=$(cat "$DB" | grep ":$handle\(:\|$\)") || {
+	error_pw "No entry found using handle \`\`${handle}''."
+	exit 1
+}
+
+old_line=$(printf '%s\n' "$old_line" | head -n1)
+
 if $opt_change_label ; then
 	sed_expr="0,\\#:$handle:#{s#:$handle:#:$new_label:#}"
 elif $opt_remove_entry ; then
 	pattern=":${handle}\\(:\\|\$\\)"
 	sed_expr="0,\\#${pattern}#{\\#${pattern}#d}"
 else
-	old_line=$(cat "$DB" | grep ":$handle\(:\|$\)") || {
-		error_pw "No entry found using handle \`\`${handle}''."
-		exit 1
-	}
-
-	old_line=$(printf '%s\n' "$old_line" | head -n1)
 	old_label=$(printf '%s\n' $old_line | cut -d: -f2)
 
 	temp_db=$(mktemp_pw)
