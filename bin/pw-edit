@@ -94,7 +94,8 @@ fi
 
 # Copy old entry in backup file
 
-echo "${old_line}" > "${DB_OLD}"
+touch "${DB_OLD}"
+echo "${old_line}" >> "${DB_OLD}"
 
 # Replace old entry with new entry
 
